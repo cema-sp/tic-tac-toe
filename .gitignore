@@ -1,0 +1,5 @@
+# Ignore temp files
+tmp/
+
+# Ignore test chain
+test/chain/
