@@ -3,3 +3,6 @@ tmp/
 
 # Ignore test chain
 test/chain/
+
+# Ignore node modules
+node_modules/
