@@ -2,16 +2,35 @@
   "name": "tic-tac-toe",
   "version": "1.0.0",
   "description": "Ehereum Tic-Tac-Toe game on Smart Contracts.",
-  "main": "index.js",
+  "main": "assets/js/index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "dev": "./node_modules/.bin/webpack-dev-server --hot --inline --port 8888 --content-base assets",
+    "build": "./node_modules/.bin/webpack -p",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "web3": "^0.17.0-alpha"
+    "web3": "^0.17.0-alpha",
+    "whatwg-fetch": "^1.0.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.4.1",
+    "clean-webpack-plugin": "^0.1.10",
+    "css-loader": "^0.25.0",
+    "elm-hot-loader": "^0.3.4",
+    "elm-webpack-loader": "^3.0.6",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "html-webpack-plugin": "^2.22.0",
+    "normalize.css": "^4.2.0",
+    "postcss-loader": "^0.13.0",
+    "precss": "^1.4.0",
+    "style-loader": "^0.13.1",
+    "sugarss": "^0.1.6",
+    "webpack": "^2.1.0-beta.25",
+    "webpack-dev-server": "^2.1.0-beta.5"
   }
 }
