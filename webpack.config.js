@@ -5,8 +5,6 @@ const ExtractTextPlugin   = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin   = require('html-webpack-plugin');
 const CleanWebpackPlugin  = require('clean-webpack-plugin');
 const autoprefixer        = require('autoprefixer');
-const precss 							= require('precss');
-const sugarss 						= require('sugarss');
 
 const nodeEnv = process.env.npm_lifecycle_event === 'build' ? 'production' : 'development';
 
@@ -37,9 +35,6 @@ const plugins = [
     minimize: true,
     options: {
       postcss: [
-				precss({
-					import: { disable: true },
-				}),
         autoprefixer({ browsers: ['last 2 versions', '> 5%'] }),
       ],
     },
@@ -52,7 +47,7 @@ const plugins = [
 const entry = {
   'js/bundle': [
     'whatwg-fetch',
-    './css/index.sss',
+    './css/index.sass',
     './js/index.js',
   ],
 };
@@ -78,7 +73,7 @@ if (nodeEnv === 'production') {
   }));
 
   elmLoader = 'elm-webpack';
-  cssLoader = ExtractTextPlugin.extract({ fallbackLoader: 'style', loader: 'css!postcss?parser=sugarss' });
+  cssLoader = ExtractTextPlugin.extract({ fallbackLoader: 'style', loader: 'css!sass!postcss' });
 } else { // nodeEnv === 'development'
   devServer = {
 		inline: true,
@@ -87,7 +82,7 @@ if (nodeEnv === 'production') {
 	};
 
 	elmLoader = 'elm-hot!elm-webpack?verbose=true&warn=true';
-  cssLoader = 'style!css!postcss?parser=sugarss';
+  cssLoader = 'style!css!sass!postcss';
   entry['js/bundle'].unshift('webpack-dev-server/client?http://localhost:8888');
 }
 
@@ -120,7 +115,7 @@ module.exports = {
         loader:   elmLoader,
       },
       {
-        test:     /\.(c|s)ss$/,
+        test:     /\.(c|sa)ss$/,
         exclude:  [/node_modules/, /elm-stuff/],
         loader:   cssLoader,
       },

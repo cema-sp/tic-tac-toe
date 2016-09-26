@@ -1,0 +1,70 @@
+@import '~sanitize.css/sanitize.css'
+
+$bg-color: white
+$border-color: darkgrey
+
+.clearfix
+  display: inline-block
+
+  &:after
+    visibility: hidden
+    display: block
+    font-size: 0
+    content: " "
+    clear: both
+    height: 0
+
+html
+  background-color: $bg-color
+
+.auth
+  width: 550px
+  margin: 0 auto
+  padding-top: 50px
+
+  .form-group
+    @extend .clearfix
+    display: block
+    margin-bottom: 10px
+
+  label
+    float: left
+
+  input
+    float: right
+    border: 1px solid $border-color
+    font-size: 11px
+    line-height: 2em
+    width: 64ch
+
+  button
+    border: 1px solid $border-color
+    background-color: lightblue
+    width: 100px
+    text-align: center
+    display: block
+    margin: 10px auto
+
+.board
+
+  $table-size: 210px
+  $table-border: 1px solid grey
+
+  table
+    width: $table-size
+    height: $table-size
+
+  tr
+    height: $table-size / 3
+
+  td
+    width: $table-size / 3
+    line-height: $table-size / 3
+    font-size: $table-size / 4.5
+    text-align: center
+    vertical-align: middle
+    border: $table-border
+
+    &:hover
+      background-color: lightgrey
+

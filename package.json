@@ -25,11 +25,11 @@
     "elm-webpack-loader": "^3.0.6",
     "extract-text-webpack-plugin": "^2.0.0-beta.4",
     "html-webpack-plugin": "^2.22.0",
+    "node-sass": "^3.10.0",
     "postcss-loader": "^0.13.0",
-    "precss": "^1.4.0",
     "sanitize.css": "^4.1.0",
+    "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
-    "sugarss": "^0.1.6",
     "webpack": "^2.1.0-beta.25",
     "webpack-dev-server": "^2.1.0-beta.5"
   }
