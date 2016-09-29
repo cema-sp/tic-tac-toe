@@ -4,7 +4,7 @@ import Html exposing (Html, div, text, table, tr, td, form, label, input, button
 import Html.Attributes exposing (class, placeholder, type')
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Html.App as App
-
+import Array exposing (Array)
 
 main : Program Never
 main =
@@ -30,11 +30,17 @@ type Symbol
   | Cross
 
 
+type alias Row =
+  Array Symbol
+
+
 type alias Board =
-  List (List Symbol)
+  Array Row
+
 
 type alias TicPoint =
   (Int, Int)
+
 
 type alias Model =
   { account : String
@@ -48,8 +54,8 @@ type alias Model =
 emptyBoard : Board
 emptyBoard =
   Empty
-    |> List.repeat 3
-    |> List.repeat 3
+    |> Array.repeat 3
+    |> Array.repeat 3
 
 
 init : ( Model, Cmd msg )
@@ -71,25 +77,40 @@ type Msg
   | Tic TicPoint
 
 
-applyTic : Board -> Symbol -> TicPoint -> Board
-applyTic board symbol (x, y) =
-  let
-    applyTicRow row =
-      List.map (\(x', sym) -> if x' == x then symbol else sym)
-        <| List.indexedMap (,) row
-  in
-    List.map (\(y', row) -> if y' == y then (applyTicRow row) else row)
-      <| List.indexedMap (,) board
+applyTic : Board -> Turn -> TicPoint -> Result String Board
+applyTic board turn (x, y) =
+  case Array.get y board of
+    Nothing ->
+      Err "Invalid Y"
+
+    Just row ->
+      case Array.get x row of
+        Nothing ->
+          Err "Invalid X"
+
+        Just sym ->
+          if sym == Empty then
+            board
+              |> Array.set y (Array.set x (turnSymbol turn) row)
+              |> Ok
+          else
+            Err "Already engaged"
 
 
 nextTurn : Turn -> Turn
 nextTurn turn =
-  if turn == Noughts then Crosses else Noughts
+  if turn == Noughts then
+    Crosses
+  else
+    Noughts
 
 
 turnSymbol : Turn -> Symbol
 turnSymbol turn =
-  if turn == Noughts then Nought else Cross
+  if turn == Noughts then
+    Nought
+  else
+    Cross
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
@@ -104,9 +125,23 @@ update msg model =
       { model | authed = True } ! []
 
     Tic point ->
-      { model | board = applyTic model.board (turnSymbol model.turn) point
-              , turn = nextTurn model.turn
-              } ! []
+      let
+        result =
+          applyTic model.board model.turn point
+            |> Result.formatError (Debug.log "Error")
+
+        board =
+          result
+            |> Result.withDefault model.board
+
+        turn =
+          result
+            |> Result.map (\_ -> nextTurn model.turn)
+            |> Result.withDefault model.turn
+      in
+        { model | board = board
+                , turn = turn
+                } ! []
 
 
 -- VIEW
@@ -127,8 +162,8 @@ authFormView model =
       ]
     ]
 
-boardCellView : Int -> (Int, Symbol) -> Html Msg
-boardCellView y (x, symbol) =
+boardCellView : TicPoint -> Symbol -> Html Msg
+boardCellView point symbol =
   let
     sym =
       case symbol of
@@ -141,27 +176,23 @@ boardCellView y (x, symbol) =
         Cross ->
           "✕"
   in
-    td [ onClick <| Tic (x, y) ] [ text sym ]
+    td [ onClick(Tic point) ] [ text sym ]
 
 
-boardRowView : (Int, List Symbol) -> Html Msg
-boardRowView (y, row) =
-  let
-    cells = 
-      List.map (boardCellView y) <| List.indexedMap (,) row
-  in
-    tr [] cells
+boardRowView : Int -> Row -> Html Msg
+boardRowView y row =
+  Array.indexedMap (\x sym -> boardCellView (x, y) sym) row
+    |> Array.toList
+    |> tr []
 
 
 boardView : Board -> Html Msg
 boardView board =
-  let
-    rows = 
-      List.map boardRowView <| List.indexedMap (,) board
-  in
-    div [ class "board" ]
-      [ table [] rows
-      ]
+  div [ class "board" ]
+    [ Array.indexedMap boardRowView board
+        |> Array.toList
+        |> table []
+    ]
 
 
 view : Model -> Html Msg

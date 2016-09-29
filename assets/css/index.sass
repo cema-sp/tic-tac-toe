@@ -46,7 +46,6 @@ html
     margin: 10px auto
 
 .board
-
   $table-size: 210px
   $table-border: 1px solid grey
 
@@ -59,7 +58,7 @@ html
 
   td
     width: $table-size / 3
-    line-height: $table-size / 3
+    line-height: ($table-size / 3) - 1px
     font-size: $table-size / 4.5
     text-align: center
     vertical-align: middle
